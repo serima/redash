@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python:2.7.12
+      - image: redis:3.0
+    working_directory: ~/redash
+    steps:
+      - checkout
+      - run: pip install --upgrade setuptools
+      - run: pip install -r requirements_dev.txt
+      - run: pip install -r requirements.txt
+      - run: make deps
+      - run: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
