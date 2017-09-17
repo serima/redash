@@ -16,6 +16,7 @@ dependencies:
 test:
   override:
     - nosetests --with-xunit --xunit-file=$CIRCLE_TEST_REPORTS/junit.xml --with-coverage --cover-package=redash tests/
+        timeout: 1200 # 20 minutes
 deployment:
   github_and_docker:
     branch: master
