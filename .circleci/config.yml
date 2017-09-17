@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:6
-      - image: redis:3.0
+      - image: postgres:9.6
     working_directory: ~/redash
     steps:
       - checkout
@@ -12,4 +12,7 @@ jobs:
       - run: sudo pip install -r requirements_dev.txt
       - run: sudo pip install -r requirements.txt
       - run: make deps
-      - run: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
+      - run:
+          name: test
+          command: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
+          no_output_timetou: "30m"
