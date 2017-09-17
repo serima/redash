@@ -2,11 +2,12 @@ version: 2
 jobs:
   build:
     docker:
-      - image: python:2.7.12
+      - image: circleci/node:6
       - image: redis:3.0
     working_directory: ~/redash
     steps:
       - checkout
+      - run: sudo apt-get upgrade && sudo apt-get install python-pip python-dev -y
       - run: pip install --upgrade setuptools
       - run: pip install -r requirements_dev.txt
       - run: pip install -r requirements.txt
