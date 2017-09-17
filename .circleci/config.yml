@@ -4,8 +4,11 @@ jobs:
     docker:
       - image: circleci/node:6
         environment:
-          DATABASE_URL: "postgres://ubuntu:@127.0.0.1:5432/circle_test"
+          DATABASE_URL: "postgres://redash@127.0.0.1:5432/redash_test"
       - image: postgres:9.6
+        environmen:
+          POSTGRES_USER: redash
+          POSTGRES_DB: redash_test
       - image: redis:3
     working_directory: ~/redash
     steps:
