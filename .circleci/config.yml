@@ -3,7 +3,12 @@ jobs:
   build:
     docker:
       - image: circleci/node:6
+        environment:
+          DATABASE_URL: "postgresql://postgres:secret@psql:5432/redash"
       - image: postgres:9.6
+        environment:
+          POSTGRES_PASSWORD: "secret"
+          POSTGRES_DB: "redash"
       - image: redis:3
     working_directory: ~/redash
     steps:
