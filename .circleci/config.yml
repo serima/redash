@@ -7,8 +7,8 @@ jobs:
     working_directory: ~/redash
     steps:
       - checkout
-      - run: apt install python-pip python-dev -y
-      - run: pip install --upgrade setuptools
+      - run: sudo apt install python-pip python-dev -y
+      - run: sudo pip install --upgrade setuptools
       - run: pip install -r requirements_dev.txt
       - run: pip install -r requirements.txt
       - run: make deps
