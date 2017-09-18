@@ -26,7 +26,7 @@ jobs:
           key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules/
-      - run:
-          name: test
-          command: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
-          no_output_timetou: "30m"
+#      - run:
+#          name: test
+#          command: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
+#          no_output_timetou: "30m"
