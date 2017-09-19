@@ -33,7 +33,7 @@ jobs:
       - run: make deps
       - save_cache:
           name: Save node_modules cache
-          key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+          key: v2-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules/
       - run:
