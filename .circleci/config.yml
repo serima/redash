@@ -24,18 +24,18 @@ jobs:
 #      - save_cache:
 #          key: v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
 #          paths: /usr/local/lib/python2.7/dist-packages
-#      - restore_cache:
-#          name: Restore node_modules cache
-#          keys:
-#            - v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-#            - v1-redash-npm-cache-{{ .Branch }}-
-#            - v1-redash-npm-cache-
+      - restore_cache:
+          name: Restore node_modules cache
+          keys:
+            - v2-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+            - v2-redash-npm-cache-{{ .Branch }}-
+            - v2-redash-npm-cache-
       - run: make deps
-#      - save_cache:
-#          name: Save node_modules cache
-#          key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-#          paths:
-#            - node_modules/
+      - save_cache:
+          name: Save node_modules cache
+          key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules/
       - run:
           name: test
           command: |
