@@ -13,29 +13,29 @@ jobs:
       - run: apt-get update && apt-get install python-dev -y
       - run: curl -kL https://bootstrap.pypa.io/get-pip.py | python
       - run: pip install --upgrade setuptools
-      - restore_cache:
-          keys:
-            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
-            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-
-            - v1-pip-cache-{{ .Branch }}-
-            - v1-pip-cache-
+#      - restore_cache:
+#          keys:
+#            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
+#            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-
+#            - v1-pip-cache-{{ .Branch }}-
+#            - v1-pip-cache-
       - run: pip install -r requirements_dev.txt
       - run: pip install -r requirements.txt
-      - save_cache:
-          key: v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
-          paths: /usr/local/lib/python2.7/dist-packages
-      - restore_cache:
-          name: Restore node_modules cache
-          keys:
-            - v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-            - v1-redash-npm-cache-{{ .Branch }}-
-            - v1-redash-npm-cache-
+#      - save_cache:
+#          key: v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
+#          paths: /usr/local/lib/python2.7/dist-packages
+#      - restore_cache:
+#          name: Restore node_modules cache
+#          keys:
+#            - v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+#            - v1-redash-npm-cache-{{ .Branch }}-
+#            - v1-redash-npm-cache-
       - run: make deps
-      - save_cache:
-          name: Save node_modules cache
-          key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - node_modules/
+#      - save_cache:
+#          name: Save node_modules cache
+#          key: v1-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+#          paths:
+#            - node_modules/
       - run:
           name: test
           command: |
