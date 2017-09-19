@@ -14,7 +14,7 @@ jobs:
       - run: sudo pip install --upgrade setuptools
       - restore_cache:
           keys:
-            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }
+            - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
             - v1-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-
             - v1-pip-cache-{{ .Branch }}-
             - v1-pip-cache-
@@ -37,4 +37,8 @@ jobs:
             - node_modules/
       - run:
           name: test
-          command: nosetests --with-xunit --xunit-file=/tmp/junit/junit.xml --with-coverage --cover-package=redash tests/
+          command: |
+            mkdir -p /tmp/test-results
+            nosetests --with-xunit --xunit-file=/tmp/test-results/junit.xml --with-coverage --cover-package=redash tests/
+      - store_test_results:
+          path: /tmp/test-results
