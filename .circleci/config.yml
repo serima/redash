@@ -10,7 +10,7 @@ jobs:
     working_directory: ~/redash
     steps:
       - checkout
-      - run: apt install python-pip python-dev -y
+      - run: apt-get update && apt-get install python-pip python-dev -y
       - run: pip install --upgrade setuptools
       - restore_cache:
           keys:
