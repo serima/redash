@@ -38,15 +38,15 @@ jobs:
           key: v2-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - node_modules/
-      - run:
-          name: test
-          command: |
-            mkdir -p /tmp/test-results
-            nosetests --with-xunit --xunit-file=/tmp/test-results/junit.xml --with-coverage --cover-package=redash tests/
-      - store_test_results:
-          path: /tmp/test-results
-      - store_artifacts:
-          path: /tmp/test-results
+#      - run:
+#          name: test
+#          command: |
+#            mkdir -p /tmp/test-results
+#            nosetests --with-xunit --xunit-file=/tmp/test-results/junit.xml --with-coverage --cover-package=redash tests/
+#      - store_test_results:
+#          path: /tmp/test-results
+#      - store_artifacts:
+#          path: /tmp/test-results
 
       - setup_remote_docker   # (2)
 
@@ -65,5 +65,5 @@ jobs:
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
           docker build -t   serima/redash:$TAG .      # (3)
-          docker login -e $DOCKER_EMAIL -p $DOCKER_PASS         # (4)
+          docker login -u $DOCKER_USER -p $DOCKER_PASS         # (4)
           docker push serima/redash:$TAG
