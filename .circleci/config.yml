@@ -1,6 +1,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      ignore:
+        - gh-pages
     docker:
       - image: node:6
         environment:
@@ -48,11 +51,9 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
 
-      - setup_remote_docker   # (2)
+      - setup_remote_docker
 
-      # use a primary image that already has Docker (recommended)
-      # or install it during a build like we do here
-      - run:
+      - deploy:
           name: Install Docker client
           command: |
             set -x
@@ -61,9 +62,10 @@ jobs:
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
 
-      # build and push Docker image
-      - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -t   serima/redash:$TAG .      # (3)
-          docker login -u $DOCKER_USER -p $DOCKER_PASS         # (4)
-          docker push serima/redash:$TAG
+      - deploy:
+          name: Build dockerfile and push
+          command: |
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t serima/redash:$(./manage.py version | sed -e "s/\+/./") .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS         # (4)
+            docker push serima/redash:$(./manage.py version | sed -e "s/\+/./")
