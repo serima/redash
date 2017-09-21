@@ -15,6 +15,13 @@ jobs:
       - checkout
       - run: apt-get update && apt-get install python-dev -y
       - run: curl -kL https://bootstrap.pypa.io/get-pip.py | python
+      - run:
+          name: Print System Information
+          command: |
+            node -v
+            npm -v
+            python -V
+            pip -V
       - run: pip install --upgrade setuptools
       - restore_cache:
           keys:
