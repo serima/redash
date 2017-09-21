@@ -11,6 +11,7 @@ jobs:
       - image: postgres:9.6
       - image: redis:3
     working_directory: ~/redash
+    resource_class: large
     steps:
       - checkout
       - run: apt-get update && apt-get install python-dev -y
