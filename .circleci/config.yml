@@ -9,7 +9,6 @@ jobs:
         environment:
           DATABASE_URL: "postgres://postgres@127.0.0.1:5432/postgres"
       - image: postgres:9.6
-      - image: redis:3
     working_directory: ~/redash
     steps:
       - checkout
