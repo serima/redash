@@ -1,0 +1,77 @@
+on: 2
+jobs:
+  build:
+    branches:
+      ignore:
+        - gh-pages
+    docker:
+      - image: node:6
+        environment:
+          DATABASE_URL: "postgres://postgres@127.0.0.1:5432/postgres"
+      - image: postgres:9.6
+      - image: redis:3
+    working_directory: ~/redash
+    steps:
+      - checkout
+      - run: apt-get update && apt-get install python-dev -y
+      - run: curl -kL https://bootstrap.pypa.io/get-pip.py | python
+      - run: pip install --upgrade setuptools
+      - restore_cache:
+          keys:
+            - v3-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
+            - v3-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-
+            - v3-pip-cache-{{ .Branch }}-
+            - v3-pip-cache-
+      - run: pip install -r requirements_dev.txt
+      - run: pip install -r requirements.txt
+      - save_cache:
+          key: v3-pip-cache-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}-{{ checksum "requirements.txt" }}
+          paths:
+            - /usr/local/lib/python2.7/dist-packages
+            - /usr/local/bin/nosetests
+      - restore_cache:
+          name: Restore node_modules cache
+          keys:
+            - v2-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+            - v2-redash-npm-cache-{{ .Branch }}-
+            - v2-redash-npm-cache-
+      - run: make deps
+      - save_cache:
+          name: Save node_modules cache
+          key: v2-redash-npm-cache-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules/
+      - run:
+          name: test
+          command: |
+            mkdir -p /tmp/test-results
+            nosetests --with-xunit --xunit-file=/tmp/test-results/junit.xml --with-coverage --cover-package=redash tests/
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+
+      # Prepare another container to start building docker image
+      - setup_remote_docker
+      - deploy:
+          name: Install Docker client
+          command: |
+            if [ "$CIRCLE_BRANCH" == 'master' ]; then
+              set -x
+              VER="17.03.0-ce"
+              curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+              tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+              mv /tmp/docker/* /usr/bin
+            fi;
+
+      - deploy:
+          name: Build and push Docker image
+          command: |
+            if [ "$CIRCLE_BRANCH" == 'master' ]; then
+              docker build -t serima/redash:$(./manage.py version | sed -e "s/\+/./") .
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker push serima/redash:$(./manage.py version | sed -e "s/\+/./")
+            fi;
+notify:
+  webhooks:
+    - url: https://webhooks.gitter.im/e/895d09c3165a0913ac2f
